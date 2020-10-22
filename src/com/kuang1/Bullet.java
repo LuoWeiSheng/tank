@@ -1,4 +1,4 @@
-package com.kuang;
+package com.kuang1;
 
 import java.awt.*;
 
@@ -7,16 +7,19 @@ public class Bullet {
     private static final int HEIGHT = 15;
     private int x;
     private int y;
-    private Directory directory;
+    private Direction direction;
     private int speed = 6;
+
+    private volatile static int count = 0;
     public Bullet() {
 
     }
 
-    public Bullet(int x, int y, Directory directory) {
+    public Bullet(int x, int y, Direction direction) {
         this.x = x;
         this.y = y;
-        this.directory = directory;
+        this.direction = direction;
+        count++;
     }
 
     public int getX() {
@@ -35,12 +38,12 @@ public class Bullet {
         this.y = y;
     }
 
-    public Directory getDirectory() {
-        return directory;
+    public Direction getDirection() {
+        return direction;
     }
 
-    public void setDirectory(Directory directory) {
-        this.directory = directory;
+    public void setDirection(Direction direction) {
+        this.direction = direction;
     }
 
     public int getSpeed() {
@@ -60,23 +63,32 @@ public class Bullet {
     }
 
     public void paint(Graphics g){
-        paint(g, x, y, WEIGHT, HEIGHT, speed, directory);
+        paint(g, x, y, WEIGHT, HEIGHT, speed, direction);
     }
 
-    public void paint(Graphics g, Directory directory){
-        paint(g, x, y, WEIGHT, HEIGHT, speed, directory);
+    public void paint(Graphics g, Direction direction){
+        paint(g, x, y, WEIGHT, HEIGHT, speed, direction);
     }
 
-    public void paint(Graphics g, int x, int y, int weight, int height, int speed, Directory directory){
+    public void paint(Graphics g, int x, int y, int weight, int height, int speed, Direction direction){
         Color c = g.getColor();
         g.setColor(Color.RED);
-        move(directory);
+        move(direction);
         g.fillOval(x, y, WEIGHT, HEIGHT);
         g.setColor(c);
     }
 
-    private void move(Directory directory) {
-        switch (directory) {
+    public int size(){
+        return count;
+    }
+    public void setSize() {
+        if(count > 0){
+            count -= 1;
+        }
+    }
+
+    private void move(Direction direction) {
+        switch (direction) {
             case LEFT:
                 x -= speed;
                 break;

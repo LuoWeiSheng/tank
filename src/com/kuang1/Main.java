@@ -1,10 +1,4 @@
-package com.kuang;
-
-import sun.awt.SunToolkit;
-
-import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+package com.kuang1;
 
 public class Main {
     @SuppressWarnings("InfiniteLoopStatement")

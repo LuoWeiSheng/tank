@@ -1,0 +1,3 @@
+1.认识Frame类-》子类JFrame
+setTitle(),setSize(),setResizeable()
+2.从Frame继承

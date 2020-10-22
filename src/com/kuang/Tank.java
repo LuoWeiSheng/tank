@@ -15,6 +15,8 @@ public class Tank {
     private Directory directory;
     private int speed = 10;
     private boolean moving = false;
+    private int weight = 50;
+    private int height = 50;
 
     public Tank() {
     }
@@ -49,12 +51,47 @@ public class Tank {
         this.moving = moving;
     }
 
-    public void paint(Graphics g) {
-        move();
-        g.fillRect(x, y, 50, 50);
+    public int getX() {
+        return x;
     }
 
-    private void move() {
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public void paint(Graphics g) {
+        move(moving);
+        Color c = g.getColor();
+        g.setColor(Color.YELLOW);
+        g.fillRect(x, y, 50, 50);
+        g.setColor(c);
+    }
+
+    private void move(Boolean moving) {
         if(!moving) return;
         switch (directory) {
             case LEFT:

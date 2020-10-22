@@ -1,25 +1,20 @@
-package com.kuang;
+package com.kuang1;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TankFrame extends Frame {
     //游戏界面大小
     private static final int GAME_WEIGHT = 800;
     private static final int GAME_HEIGHT = 600;
-    private boolean shoot = false;
-    private boolean isInit = true;
-    Tank myTank = new Tank(100, 200, Directory.DEFAULT);
-    Bullet bullet = new Bullet(300, 400, Directory.DOWN);
-    Bullet[] bullet1 = new Bullet[150];
-    Bullet[] bullet2 = new Bullet[150];
-    Bullet[] bullet3 = new Bullet[150];
-    Bullet[] bullet4 = new Bullet[150];
-    Bullet[] bullet5 = new Bullet[150];
+    Tank myTank = new Tank(100, 200, Direction.DEFAULT, this);
+    Bullet bullet = new Bullet(300, 400, Direction.DOWN);
+    List<Bullet> bullets = new ArrayList<>();
 
     public boolean isGameStop() {
         return gameStop;
@@ -75,10 +70,7 @@ public class TankFrame extends Frame {
                 }
                 //这里不用判主坦克为空
                 if (e.getKeyCode() == 69) {//e键，发射子弹
-                    shoot = true;
-                    System.out.println(e.getKeyCode());
-                    myTank.setMoving(false);
-                    shoot();
+                    myTank.fire();
                 }
                 //System.out.println(e.getKeyCode());
                /* switch (e.getKeyCode()) {
@@ -147,89 +139,32 @@ public class TankFrame extends Frame {
             //根据移动按键设置方向，只能上下左右
             private void setMainTankDir(Tank tank) {
                 //游戏初始化，不用按空格，可以直接操作上下左右,并且暂停时不可以更改方向，像贪吃虫逻辑
-                isInit = false;
                 if (!gameStop) {
-                    if(bL || bU || bR || bD){
+                    if (bL || bU || bR || bD) {
                         myTank.setMoving(true);
-                    }else {
+                    } else {
                         return;
                     }
                     //myTank.setMoving(true);
                     if (bL) {
-                        tank.setDirectory(Directory.LEFT);
+                        tank.setDirection(Direction.LEFT);
                         //x -= speed;
                     }
                     if (bU) {
-                        tank.setDirectory(Directory.UP);
+                        tank.setDirection(Direction.UP);
                         //y -= speed;
                     }
                     if (bR) {
-                        tank.setDirectory(Directory.RIGHT);
+                        tank.setDirection(Direction.RIGHT);
                         //x += speed;
                     }
                     if (bD) {
-                        tank.setDirectory(Directory.DOWN);
+                        tank.setDirection(Direction.DOWN);
                         //y += speed;
                     }
                 }
             }
         });
-    }
-
-    public void shoot() {
-        if (shoot) {
-            switch (myTank.getDirectory()) {
-                case LEFT://子弹画在主坦克的左边盒子边缘中间，···
-                    for (int i = 0; i < bullet1.length; i++) {
-                        if (bullet1[i] == null){
-                            bullet1[i] = new Bullet(myTank.getX() - Bullet.getWEIGHT(), myTank.getY() + (myTank.getHeight() - Bullet.getHEIGHT()) / 2, myTank.getDirectory());
-                            break;//break限定for只赋值一次。。。。
-                        }
-                    }
-                    break;
-                case UP:
-                    for (int i = 0; i < bullet2.length; i++) {
-                        if (bullet2[i] == null){
-                            bullet2[i] = new Bullet(myTank.getX() + ((myTank.getWeight() - Bullet.getWEIGHT()) / 2), myTank.getY() - Bullet.getHEIGHT(), myTank.getDirectory());
-                            break;
-                        }
-                    }
-                    break;
-                case RIGHT:
-                    for (int i = 0; i < bullet3.length; i++) {
-                        if (bullet3[i] == null){
-                            bullet3[i] = new Bullet(myTank.getX() + myTank.getWeight(), myTank.getY() + (myTank.getHeight() - Bullet.getHEIGHT()) / 2, myTank.getDirectory());
-                            break;
-                        }
-                    }
-                    break;
-                case DOWN:
-                    for (int i = 0; i < bullet4.length; i++) {
-                        if (bullet4[i] == null){
-                            bullet4[i] = new Bullet(myTank.getX() + ((myTank.getWeight() - Bullet.getWEIGHT()) / 2), myTank.getY() + myTank.getHeight(), myTank.getDirectory());
-                            break;
-                        }
-                        //break;只能发射一颗，但是能是子弹加速
-                    }
-                    break;
-                case DEFAULT:
-                    for (int i = 0; i < bullet5.length; i++) {
-                        if (bullet5[i] == null){
-                            bullet5[i] = new Bullet(myTank.getX() + ((myTank.getWeight() - Bullet.getWEIGHT()) / 2), myTank.getY() - Bullet.getHEIGHT(), Directory.UP);
-                            break;
-                        }
-
-                        if(bullet5[0] != null)
-                        System.out.println(bullet5[0]);
-                        if(bullet5[1] != null)
-                            System.out.println(bullet5[1]);
-
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
     }
 
     //双缓冲解决闪烁问题
@@ -256,36 +191,20 @@ public class TankFrame extends Frame {
         //Image image = new ImageIcon("src\\resouces\\7(GKRWU0(77)55]$QHG@R[N.png").getImage();
         //g.drawImage(image,1, 2, this);
         //初始化显示主坦克
-
         myTank.paint(g);
-        
         bullet.paint(g);
-        if (shoot) {
-            for (Bullet bullet : bullet1) {
-                if (bullet != null) {
-                    bullet.paint(g);
-                }
-            }
-            for (Bullet bullet : bullet2) {
-                if (bullet != null) {
-                    bullet.paint(g);
-                }
-            }
-            for (Bullet bullet : bullet3) {
-                if (bullet != null) {
-                    bullet.paint(g);
-                }
-            }
-            for (Bullet bullet : bullet4) {
-                if (bullet != null) {
-                    bullet.paint(g);
-                }
-            }
-            for (Bullet bullet : bullet5) {
-                if (bullet != null) {
-                    bullet.paint(g);
-
-                    //System.out.println(bullet);
+        Color c = g.getColor();
+        g.setColor(Color.WHITE);
+        g.drawString("子弹的数量:" + bullets.size(), 10, 60);
+        for (int i = 0; i < bullets.size(); i++) {
+            if (bullets.get(i) != null) {
+                bullets.get(i).paint(g);
+                g.setColor(Color.WHITE);
+                g.drawString("子弹的数量:" + bullets.size(), 10, 60);
+                g.setColor(c);
+                if (bullets.get(i).getX() < 0 || bullets.get(i).getY() < 0 || bullets.get(i).getX() > GAME_HEIGHT || bullets.get(i).getY() > GAME_HEIGHT) {
+                    bullets.get(i).setSize();
+                    bullets.remove(i);
                 }
             }
         }
